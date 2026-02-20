@@ -2,7 +2,7 @@
 
 A high-performance, _Ledger-Based Credit Management System_ built using Node.js and SQLite. This service is designed to handle virtual currencies as a banking system.
 
-**CORE API ENDPOINTS :**
+## **CORE API ENDPOINTS :**
 __Method Endpoint Description__
 ```
     POST  ->  /wallet/topup          -> Converts real-world value to credits [ + WALLET ]
@@ -11,7 +11,7 @@ __Method Endpoint Description__
     GET   ->  /wallet/balance/:id    -> Retrieves real-time audited balance
 ```
 
-**Used SQLite** 
+**Used SQLite**. 
 Because it is a serverless, zero-config database that supports full ACID transactions.
 
 **To install the necessary tools for ACID transactions.**
@@ -19,9 +19,11 @@ Because it is a serverless, zero-config database that supports full ACID transac
 npm install express sqlite3 sqlite
 ```
 **Database Initialization (seed.js)**
+
 -> seed.js implements a Ledger-Based Architecture. It creates the tables and seeds them with the required Asset Types, Accounts, and User Accounts.
 
 **The API Server (index.js)**
+
 -> index.js handles the Functional Logic for Top-ups, Bonus, and Spending. It uses transactions to ensure Data Integrity
 
 **To deduct 30 coins (Spend):**
