@@ -1,4 +1,4 @@
-#INTERNAL WALLET SERVICE :
+# 💳 INTERNAL WALLET SERVICE :
 
 A high-performance, _Ledger-Based Credit Management System_ built using Node.js and SQLite. This service is designed to handle virtual currencies as a banking system.
 
@@ -11,18 +11,18 @@ __Method Endpoint Description__
     GET   ->  /wallet/balance/:id    -> Retrieves real-time audited balance
 ```
 
-**Used SQLite** -> Because it is a serverless, zero-config database that supports full ACID transactions.
+**Used SQLite** 
+Because it is a serverless, zero-config database that supports full ACID transactions.
 
 **To install the necessary tools for ACID transactions.**
 ```
 npm install express sqlite3 sqlite
 ```
 **Database Initialization (seed.js)**
- -> seed.js implements a Ledger-Based Architecture. It creates the tables and seeds them with the required Asset Types, 
-    Accounts, and User Accounts.
+-> seed.js implements a Ledger-Based Architecture. It creates the tables and seeds them with the required Asset Types, Accounts, and User Accounts.
 
 **The API Server (index.js)**
- -> index.js handles the Functional Logic for Top-ups, Bonus, and Spending. It uses transactions to ensure Data Integrity
+-> index.js handles the Functional Logic for Top-ups, Bonus, and Spending. It uses transactions to ensure Data Integrity
 
 **To deduct 30 coins (Spend):**
 ```
