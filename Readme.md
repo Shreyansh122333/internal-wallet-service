@@ -1,33 +1,74 @@
-# 💳 INTERNAL WALLET SERVICE :
+# 💳 INTERNAL WALLET SERVICE
 
-A high-performance, _Ledger-Based Credit Management System_ built using Node.js and SQLite. This service is designed to handle virtual currencies as a banking system.
+A high-performance, **Ledger-Based Credit Management System** built with Node.js and SQLite. This service handles virtual currencies with banking-grade data integrity.
 
-## **CORE API ENDPOINTS :**
-__Method Endpoint Description__
-```
-    POST  ->  /wallet/topup          -> Converts real-world value to credits [ + WALLET ]
-    POST  ->  /wallet/spend          -> Deduct credits for services [ - WALLET ]
-    POST  ->  /wallet/bonus          -> Issues system-generated incentives
-    GET   ->  /wallet/balance/:id    -> Retrieves real-time audited balance
-```
+---
 
-**Used SQLite**
+## 🚀 NEW: Security & Route Service
+This version introduces **JWT Authentication** and **Role-Based Access Control (RBAC)**.
+* **Authentication**: Users must log in to receive a Bearer Token.
+* **Route Protection**: Sensitive transactions (Top-up, Spend) now require the `Authorization` header.
+* **Admin Roles**: The `/wallet/bonus` route is restricted to accounts with the `admin` role.
 
--> Because it is a serverless, zero-config database that supports full ACID transactions.
+---
 
+## **CORE API ENDPOINTS**
+
+| Method | Endpoint | Description | Auth Required |
+|:--- |:--- |:--- |:--- |
+| **POST** | `/auth/login` | Returns a JWT token for valid credentials | No |
+| **POST** | `/wallet/topup` | Converts real-world value to credits | **Yes** |
+| **POST** | `/wallet/spend` | Deduct credits for services | **Yes** |
+| **POST** | `/wallet/bonus` | Issues system-generated incentives (Admin Only) | **Yes (Admin)** |
+| **GET** | `/wallet/balance` | Retrieves real-time audited balance for current user | **Yes** |
+
+---
+
+## 🛠️ CONCURRENCY & INTEGRITY STRATEGY
+This is the core architecture designed to meet high-traffic constraints:
+
+1. **ACID Transactions**: Every credit/debit uses `BEGIN TRANSACTION` and `COMMIT/ROLLBACK`. This ensures that a balance update never happens without a corresponding ledger entry.
+2. **Idempotency**: Every request requires a `refId`. The database enforces a `UNIQUE` constraint on this ID to prevent accidental double-spending or duplicate credits during network retries.
+3. **Double-Entry Ledger**: The system doesn't just "change a number." It records a full audit trail in the `transactions` table, moving value from the **Treasury** (ID 1) to users and vice versa.
+
+---
+
+## **GETTING STARTED**
 **To install the necessary tools for ACID transactions.**
 ```
 npm install express sqlite3 sqlite
 ```
-**Database Initialization (seed.js)**
 
--> seed.js implements a Ledger-Based Architecture. It creates the tables and seeds them with the required Asset Types, Accounts, and User Accounts.
+### 1. Installation
+```bash
+npm install express sqlite3 sqlite jsonwebtoken bcryptjs
+```
 
-**The API Server (index.js)**
+### 2. Database Initialization
+```
+node seed.js
+```
 
--> index.js handles the Functional Logic for Top-ups, Bonus, and Spending. It uses transactions to ensure Data Integrity
+### 3. Start Server
+```
+node index.js
+```
+### TESTING THE FLOW (cURL)
 
-**To deduct 30 coins (Spend):**
+**Step 1: Login to get your Token**
+```
+ curl -X POST http://localhost:3000/auth/login \
+-H "Content-Type: application/json" \
+-d '{"username": "User_1", "password": "your_password_here"}'
+```
+
+**Step 2: Check Balance (Authenticated)**
+```
+curl -X GET http://localhost:3000/wallet/balance \
+-H "Authorization: Bearer <PASTE_TOKEN_HERE>"
+```
+
+**Step 3: To deduct 30 coins (Spend):**
 ```
 curl -X POST http://localhost:3000/wallet/spend \
 -H "Content-Type: application/json" \
@@ -67,15 +108,23 @@ rm -rf node_modules
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NzE1ODMzMjYsImV4cCI6MTc3MTU4NjkyNn0.ROHtV0gZya3e9ysnuYEQ0GjdKmwHeb3dtuFloQqcIIc
 ```
 
-**Login (Get Token):**
-```
- curl -X POST http://localhost:3000/auth/login \
--H "Content-Type: application/json" \
--d '{"username": "User_1", "password": "your_password_here"}'
-```
+
+
 
 **Check Balance (Protected):**
 ```
 curl -X GET http://localhost:3000/wallet/balance \
 -H "Authorization: Bearer PASTE_TOKEN_HERE"
+```
+
+__TRASH (Just for basic understanding)__
+
+**Used SQLite**
+
+-> Because it is a serverless, zero-config database that supports full ACID transactions.
+
+**To reset the environment:**
+```
+rm -rf node_modules
+rm wallet.db
 ```
