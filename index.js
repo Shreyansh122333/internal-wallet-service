@@ -1,8 +1,10 @@
+const jwt = require('jsonwebtoken');
+
 const express = require('express');
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 
-const jwt = require('jsonwebtoken');
+
 const bcrypt = require('bcryptjs');
 const { SECRET_KEY } = require('./auth');
 const { verifyToken } = require('./auth');
@@ -89,7 +91,7 @@ app.post('/wallet/spend', verifyToken, async (req, res) => {
 });
 
 // GET Balance for verification
-app.get('/wallet/balance/:userId', async (req, res) => {
+app.get('/wallet/balance/:id', async (req, res) => {
     const row = await db.get('SELECT balance FROM wallets WHERE id = ?', [req.params.userId]);
     row ? res.json(row) : res.status(404).json({ error: "User not found" });
 });
