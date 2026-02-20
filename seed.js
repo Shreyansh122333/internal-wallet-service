@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 
@@ -27,10 +29,17 @@ async function setup() {
 `   );
 
     // Seed the Data 
-    await db.run("INSERT OR IGNORE INTO assets (name) VALUES ('Gold Coins'), ('Diamonds')");
-    await db.run("INSERT OR IGNORE INTO wallets (id, owner_name, balance) VALUES (1, 'Treasury', 1000000)");
-    await db.run("INSERT OR IGNORE INTO wallets (id, owner_name, balance) VALUES (2, 'User_1', 100)");
-    await db.run("INSERT OR IGNORE INTO wallets (id, owner_name, balance) VALUES (3, 'User_2', 100)");
+    const hashedPassword = await bcrypt.hash('your_password_here', 10);
+
+    await db.run(
+        "INSERT OR IGNORE INTO users (id, username, password, role) VALUES (?, ?, ?, ?)", 
+        [2, 'User_1', hashedPassword, 'user']
+    );
+    
+    await db.run(
+        "INSERT OR IGNORE INTO users (id, username, password, role) VALUES (?, ?, ?, ?)", 
+        [1, 'Admin_User', hashedPassword, 'admin'] // Added an admin for testing /bonus
+    );
     
     console.log("Database Seeded Successfully.");
 }

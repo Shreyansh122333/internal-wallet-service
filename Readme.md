@@ -27,10 +27,35 @@ curl -X POST http://localhost:3000/wallet/spend \
 -H "Content-Type: application/json" \
 -d '{"userId": 2, "amount": 30, "refId": "order_001"}'
 
+<!-- To deduct 30 coins (Spend) with Auth: -->
+curl -X POST http://localhost:3000/wallet/spend \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer PASTE_TOKEN_HERE" \
+-d '{"amount": 30, "refId": "order_001"}'
+
 <!-- To add 200 coins (Top-up): -->
 curl -X POST http://localhost:3000/wallet/topup \
 -H "Content-Type: application/json" \
 -d '{"userId": 2, "amount": 200, "refId": "change_test_01"}'  
 
+<!-- To add 200 coins (Top-up) with auth: -->
+curl -X POST http://localhost:3000/wallet/topup \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer PASTE_TOKEN_HERE" \
+-d '{"amount": 30, "refId": "change_test_01"}'
+
 <!-- To delete node_modules -->
  -> rm -rf node_modules
+
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NzE1ODMxMzgsImV4cCI6MTc3MTU4NjczOH0.b8HyT0p9oPnxcRoO1QMNBPk
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NzE1ODMzMjYsImV4cCI6MTc3MTU4NjkyNn0.ROHtV0gZya3e9ysnuYEQ0GjdKmwHeb3dtuFloQqcIIc
+
+<!-- Login (Get Token): -->
+ curl -X POST http://localhost:3000/auth/login \
+-H "Content-Type: application/json" \
+-d '{"username": "User_1", "password": "your_password_here"}'
+
+<!-- Check Balance (Protected): -->
+curl -X GET http://localhost:3000/wallet/balance \
+-H "Authorization: Bearer PASTE_TOKEN_HERE"

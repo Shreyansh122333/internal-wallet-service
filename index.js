@@ -67,7 +67,6 @@ async function executeTransaction(fromId, toId, assetId, amount, refId) {
 // 1. Wallet Top-up Flow 
 app.post('/wallet/topup', verifyToken, async (req, res) => {
     const { amount, refId } = req.body;
-    // Use req.user.id from the JWT instead of trusting a userId in the body
     const result = await executeTransaction(1, req.user.id, 1, amount, refId);
     res.status(result.success ? 200 : 400).json(result);
 });
@@ -92,7 +91,7 @@ app.post('/wallet/spend', verifyToken, async (req, res) => {
 
 // GET Balance for verification
 app.get('/wallet/balance/:id', async (req, res) => {
-    const row = await db.get('SELECT balance FROM wallets WHERE id = ?', [req.params.userId]);
+    const row = await db.get('SELECT balance FROM wallets WHERE id = ?', [req.params.id]);
     row ? res.json(row) : res.status(404).json({ error: "User not found" });
 });
 
