@@ -103,14 +103,6 @@ curl -X POST http://localhost:3000/wallet/topup \
 rm -rf node_modules
 ```
 
-**My used token**
-```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NzE1ODMzMjYsImV4cCI6MTc3MTU4NjkyNn0.ROHtV0gZya3e9ysnuYEQ0GjdKmwHeb3dtuFloQqcIIc
-```
-
-
-
-
 **Check Balance (Protected):**
 ```
 curl -X GET http://localhost:3000/wallet/balance \
@@ -127,4 +119,9 @@ __TRASH (Just for basic understanding)__
 ```
 rm -rf node_modules
 rm wallet.db
+```
+
+**My used token**
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NzE1ODMzMjYsImV4cCI6MTc3MTU4NjkyNn0.ROHtV0gZya3e9ysnuYEQ0GjdKmwHeb3dtuFloQqcIIc
 ```
