@@ -1,10 +1,10 @@
-**#INTERNAL WALLET SERVICE :**
+#INTERNAL WALLET SERVICE :
 
 A high-performance, _Ledger-Based Credit Management System_ built using Node.js and SQLite. This service is designed to handle virtual currencies as a banking system.
 
 **CORE API ENDPOINTS :**
+__Method Endpoint Description__
 ```
-    **Method Endpoint Description**
     POST  ->  /wallet/topup          -> Converts real-world value to credits [ + WALLET ]
     POST  ->  /wallet/spend          -> Deduct credits for services [ - WALLET ]
     POST  ->  /wallet/bonus          -> Issues system-generated incentives
