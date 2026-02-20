@@ -11,7 +11,9 @@ __Method Endpoint Description__
     GET   ->  /wallet/balance/:id    -> Retrieves real-time audited balance
 ```
 
-**Used SQLite**. Because it is a serverless, zero-config database that supports full ACID transactions.
+**Used SQLite**
+
+-> Because it is a serverless, zero-config database that supports full ACID transactions.
 
 **To install the necessary tools for ACID transactions.**
 ```
