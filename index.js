@@ -2,6 +2,11 @@ const express = require('express');
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const { SECRET_KEY } = require('./auth');
+const { verifyToken } = require('./auth');
+
 const app = express();
 app.use(express.json());
 
@@ -58,23 +63,28 @@ async function executeTransaction(fromId, toId, assetId, amount, refId) {
 }
 
 // 1. Wallet Top-up Flow 
-app.post('/wallet/topup', async (req, res) => {
-    const { userId, amount, refId } = req.body;
-    const result = await executeTransaction(1, userId, 1, amount, refId);
+app.post('/wallet/topup', verifyToken, async (req, res) => {
+    const { amount, refId } = req.body;
+    // Use req.user.id from the JWT instead of trusting a userId in the body
+    const result = await executeTransaction(1, req.user.id, 1, amount, refId);
     res.status(result.success ? 200 : 400).json(result);
 });
 
 // 2. Bonus/Incentive Flow 
-app.post('/wallet/bonus', async (req, res) => {
+app.post('/wallet/bonus', verifyToken, async (req, res) => {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ error: "Unauthorized: Admin access required" });
+    }
     const { userId, amount, refId } = req.body;
     const result = await executeTransaction(1, userId, 1, amount, refId);
     res.status(result.success ? 200 : 400).json(result);
 });
 
 // 3. Purchase/Spend Flow 
-app.post('/wallet/spend', async (req, res) => {
-    const { userId, amount, refId } = req.body;
-    const result = await executeTransaction(userId, 1, 1, amount, refId);
+app.post('/wallet/spend', verifyToken, async (req, res) => {
+    const { amount, refId } = req.body;
+    // req.user.id spends to Treasury (ID 1)
+    const result = await executeTransaction(req.user.id, 1, 1, amount, refId);
     res.status(result.success ? 200 : 400).json(result);
 });
 
@@ -82,6 +92,26 @@ app.post('/wallet/spend', async (req, res) => {
 app.get('/wallet/balance/:userId', async (req, res) => {
     const row = await db.get('SELECT balance FROM wallets WHERE id = ?', [req.params.userId]);
     row ? res.json(row) : res.status(404).json({ error: "User not found" });
+});
+
+// Authentication
+app.post('/auth/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+
+    if (user && await bcrypt.compare(password, user.password)) {
+        const token = jwt.sign({ id: user.id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+        res.json({ token });
+    } else {
+        res.status(401).json({ error: "Invalid credentials" });
+    }
+});
+
+// Protected Balance Check
+app.get('/wallet/balance', verifyToken, async (req, res) => {
+    // req.user.id comes from the verified JWT token
+    const row = await db.get('SELECT balance FROM wallets WHERE id = ?', [req.user.id]);
+    row ? res.json(row) : res.status(404).json({ error: "Wallet not found" });
 });
 
 initializeDatabaseAndServer();

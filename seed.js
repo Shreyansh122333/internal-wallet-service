@@ -17,6 +17,15 @@ async function setup() {
         );
     `);
 
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        password TEXT,
+        role TEXT DEFAULT 'user'
+        );
+`   );
+
     // Seed the Data 
     await db.run("INSERT OR IGNORE INTO assets (name) VALUES ('Gold Coins'), ('Diamonds')");
     await db.run("INSERT OR IGNORE INTO wallets (id, owner_name, balance) VALUES (1, 'Treasury', 1000000)");
@@ -25,4 +34,5 @@ async function setup() {
     
     console.log("Database Seeded Successfully.");
 }
+
 setup().catch(err => console.error(err));

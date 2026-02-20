@@ -34,5 +34,3 @@ curl -X POST http://localhost:3000/wallet/topup \
 
 <!-- To delete node_modules -->
  -> rm -rf node_modules
-
- ![alt text](image.png)
