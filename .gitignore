@@ -1,0 +1,4 @@
+node_modules/
+wallet.db
+image.png
+.DS_Store
